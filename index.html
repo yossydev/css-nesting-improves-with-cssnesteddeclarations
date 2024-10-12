@@ -4,9 +4,49 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSS Bug Test</title>
-    <link rel="stylesheet" href="index.css" />
+    <style>
+      .foo {
+        width: fit-content;
+
+        @media screen and (min-width: 900px) {
+          background-color: red;
+        }
+
+        background-color: green;
+      }
+    </style>
   </head>
   <body>
     <div class="foo">This is a test.</div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", (event) => {
+        // CSSOMにアクセスしてスタイルシートを取得
+        const stylesheet = document.styleSheets[0];
+
+        // 全てのルールにアクセス
+        const rules = stylesheet.cssRules || stylesheet.rules;
+
+        for (let rule of rules) {
+          console.log(rule.cssText); // CSSルールのテキストを表示
+
+          // メディアクエリの場合、内包するルールも表示
+          if (rule instanceof CSSMediaRule) {
+            console.log(`Media Rule: ${rule.conditionText}`);
+            for (let mediaRule of rule.cssRules) {
+              console.log("  " + mediaRule.cssText);
+            }
+          }
+        }
+
+        // 指定されたクラスの計算スタイルを取得
+        const fooElement = document.querySelector(".foo");
+        const computedStyles = window.getComputedStyle(fooElement);
+        console.log(
+          "Computed background-color:",
+          computedStyles.backgroundColor,
+        );
+      });
+    </script>
   </body>
 </html>
