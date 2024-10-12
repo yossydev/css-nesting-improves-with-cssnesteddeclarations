@@ -1,0 +1,9 @@
+.foo {
+  width: fit-content;
+
+  @media screen and (min-width: 900px) {
+    background-color: red;
+  }
+
+  background-color: green;
+}
